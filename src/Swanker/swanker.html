@@ -1,0 +1,239 @@
+﻿<!doctype html>
+<html lang="en">
+
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+
+    <title>SWANKER</title>
+
+    <style>
+        div {
+            padding: 0px;
+        }
+
+        .dot {
+            height: 50px;
+            width: 50px;
+            background-color: #1AADE8;
+            border-radius: 50%;
+            border: 2px solid black;
+            display: inline-block;
+            font-size: 20px;
+            font-family: Arial, Helvetica, sans-serif;
+            text-align: center;
+            display: table-cell;
+            vertical-align: middle !important;
+        }
+
+        .paddign-container {
+            padding: 20px;
+            ;
+        }
+
+        .uibtn {
+            width: 100%;
+        }
+    </style>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.4.1/jquery.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+    <script>
+        let api = window.location.protocol + "//" + window.location.host;
+        let root = window.location.protocol + "//" + window.location.host + window.location.pathname;
+        let data;
+
+        var post = (pd, resp, btn, tp) => {
+            var ss = new Date();
+            btn.prop('disabled', true);
+            jQuery.ajax({
+                type: 'POST',
+                url: `${api}${data.GenericEndpoint}`,
+                data: `${pd}`,
+                contentType: 'application/json',
+                headers: {
+                    'domain-type': `${tp}`
+                }
+            })
+                .done(function (d) {
+                    btn.prop('disabled', false);
+                    resp.show();
+
+                    resp.val(`Elapsed: ${new Date() - ss}ms\n${JSON.stringify(d, null, 1)}`);
+                    resp.css({ 'background-color': '#DDF5EF' })
+                })
+                .fail(function (x, s) {
+                    btn.prop('disabled', false);
+                    resp.show();
+
+                    resp.val(`Request failed (${new Date() - ss}ms): ${s}\n${JSON.stringify(x, null, 1)}"`)
+                    resp.css({ 'background-color': '#F1CACF' })
+                });
+        }
+
+        $.get(root + '/parameters', (_data) => {
+
+            var header = $('#header');
+            data = JSON.parse(_data);
+            header.html('SWANKER: ' + data.AppName + ' ' + data.AppVersion);
+
+            var nsbtn = $("#namespacesbtn");
+            var ndd = $('#namespacesdropdown');
+
+            var selectedNamespace;
+            var selectedName;
+            var assembly;
+            var allowsend = data.AllowSendToGeneric;
+
+            ndd.on('click', 'li', function () {
+                selectedNamespace = $(this).text()
+                nsbtn.text(selectedNamespace);
+                tdd.empty();
+
+                data.TypeDescriptors.forEach(t => {
+                    if (t.Namespace === selectedNamespace) {
+                        t.Names.forEach(n => tdd.append(`<li class="dropdown-item query-item">${n}</li>`))
+                        tsbtn.prop('disabled', false);
+                    }
+                })
+            });
+
+            var tresp = $("#typeresptxt");
+            var tsbtn = $("#typesbtn");
+            var tbtn = $("#typebtn");
+            var tdd = $('#typesdropdown');
+            var ttxt = $('#typetxt');
+            var out = $('#output');
+            var tstxt = $('#tstxt');
+
+            tsbtn.prop('disabled', true);
+            tresp.hide();
+            tbtn.hide();
+            ttxt.hide();
+            tresp.hide();
+            out.hide();
+
+            tdd.on('click', 'li', function () {
+                selectedName = $(this).text();
+                tsbtn.text(selectedName);
+                $.get(`${root}/details?name=${selectedNamespace}.${selectedName}&typeHeader=${$("#typeHeader").is(':checked')}`, (d) => {
+                    ttxt.val(d.json);
+                    tstxt.val(d.typeScript);
+                    assembly = d.assembly;
+
+                    if (!ttxt.is(":visible") && !tstxt.is(":visible")) {
+                        if (allowsend) {
+                            ttxt.show();
+                            tbtn.show();
+                            out.show();
+                        } else {
+                            tstxt.show();
+                        }
+                    }
+                });
+            });
+
+            data.TypeDescriptors.forEach(q => {
+                ndd.append('<li class="dropdown-item query-item">' + q.Namespace + '</li>');
+            });
+
+            tbtn.click(() => post(ttxt.val(), tresp, tbtn, `${selectedNamespace}.${selectedName},${assembly}`));
+
+
+            var ts = $('#ts');
+            var json = $('#json');
+
+            ts.click(() => {
+                tstxt.show();
+                ttxt.hide();
+                tresp.hide();
+                tbtn.hide();
+            });
+            json.click(() => {
+                tstxt.hide();
+                ttxt.show();
+                tresp.show();
+                tbtn.show();
+            });
+
+            tstxt.hide();
+
+            $('#includedContent').val(_data);
+        });
+
+    </script>
+</head>
+
+<body>
+    <div class="navbar navbar-dark bg-dark">
+        <div>
+            <div class="dot">{&lt;&gt;}</div>
+        </div>
+
+
+        <a class="navbar-brand col" href="#">
+            <h3 id="header">SWANK</h3>
+        </a>
+    </div>
+    <div class="container-fluid paddign-container">
+        <div class="col">
+            <div class="row">
+                <div class="col-3"> </div>
+
+                <div class="col-6">
+                    <h3>Namespaces</h3>
+
+                    <div class="dropdown">
+                        <button class="btn btn-outline-secondary dropdown-toggle uibtn" id="namespacesbtn"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Namespaces
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="namespacesdropdown"></div>
+                    </div>
+
+                    <h3>Types</h3>
+                    <div class="custom-control custom-checkbox">
+                        <input type="checkbox" class="custom-control-input" id="typeHeader" checked> 
+                        <label class="custom-control-label" for="typeHeader">Type info in header</label>
+                    </div>
+                    <div class="dropdown">
+                        <button class="btn btn-outline-secondary dropdown-toggle uibtn" id="typesbtn"
+                            data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            Types
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton" id="typesdropdown"></div>
+                    </div>
+
+                    <div class="btn-group btn-group-toggle" data-toggle="buttons" id="output">
+                        <label class="btn btn-outline-info active">
+                            <input type="radio" name="options" id="json" autocomplete="off" checked> JSON
+                        </label>
+                        <label class="btn btn-outline-info">
+                            <input type="radio" name="options" id="ts" autocomplete="off"> TS
+                        </label>
+                    </div>
+
+                    <textarea class="form-control" id="tstxt" rows="10"></textarea>
+                    <textarea class="form-control" id="typetxt" rows="10"></textarea>
+                    <button class="btn btn-outline-secondary uibtn" id="typebtn"> Send </button>
+                    <textarea class="form-control" id="typeresptxt" rows="10"></textarea>
+                </div>
+
+                <div id="includedContent" style="display: none;"></div>
+                <div class="col-3"> </div>
+            </div>
+        </div>
+    </div>
+</body>
+
+</html>
