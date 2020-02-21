@@ -23,6 +23,8 @@
     <None Update="swanker.html">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+
+    <Content Include="swanker.html" Pack="true" PackagePath="contentFiles\" PackageCopyToOutput="true" />
   </ItemGroup>
 
 </Project>
