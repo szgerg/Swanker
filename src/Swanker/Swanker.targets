@@ -1,0 +1,8 @@
+﻿<Project xmlns = "http://schemas.microsoft.com/developer/msbuild/200">
+  <ItemGroup>
+    <SwankerHtml Include="$(MSBuildThisFileDirectory)**\swanker.html" />
+    <None Include="@(SwankerHtml)">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+</Project>

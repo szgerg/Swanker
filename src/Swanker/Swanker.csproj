@@ -6,11 +6,17 @@
     <AssemblyVersion>0.1.2.0</AssemblyVersion>
     <FileVersion>0.1.2.0</FileVersion>
     <Version>0.1.2</Version>
+    <PackageRequireLicenseAcceptance>false</PackageRequireLicenseAcceptance>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Swanker.targets" />
+  </ItemGroup>
+
+  <ItemGroup>
     <FrameworkReference Include="Microsoft.AspNetCore.App" />
-  </ItemGroup> 
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore" Version="2.2.0" />
@@ -20,11 +26,12 @@
   </ItemGroup>
 
   <ItemGroup>
-    <None Update="swanker.html">
+    <None Include="swanker.html" Pack="true" PackagePath="build\" PackageCopyToOutput="true">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
-
-    <Content Include="swanker.html" Pack="true" PackagePath="contentFiles\" PackageCopyToOutput="true" />
+    <None Include="Swanker.targets" Pack="true" PackagePath="build\">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
   </ItemGroup>
 
 </Project>
