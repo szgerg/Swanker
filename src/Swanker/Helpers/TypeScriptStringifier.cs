@@ -16,7 +16,7 @@ namespace Swanker.Helpers
             _logger = logger;
         }
 
-        public List<string> Stringify(Type type, int tab)
+        public List<string> Stringify(Type type, int tab, bool prop = false)
         {
             var list = new List<string>();
 
@@ -30,7 +30,8 @@ namespace Swanker.Helpers
 
             if (type == typeof(string))
             {
-                list.Add($"{tb(tab)}Result type: string{rn}");
+                if (!prop)
+                    list.Add($"{tb(tab)}Result type: string{rn}");
                 return list;
             }
 
@@ -45,9 +46,13 @@ namespace Swanker.Helpers
                     return list;
                 }
 
-                list.Add($"{tb(tab)}Result type: {it.Name} []{rn}");
+                if (!prop)
+                    list.Add($"{tb(tab)}Result type: {it.Name} []{rn}");
 
-                list.AddRange(Stringify(it, tab));
+                if (it.Name == typeof(string).Name)
+                    return list;
+
+                list.AddRange(Stringify(it, tab, true));
 
                 return list;
             }
@@ -70,13 +75,13 @@ namespace Swanker.Helpers
                 {
                     res += $"{tb(tab + 1)}{pi.Name.f2l()}: {pi.PropertyType.GetGenericArguments().FirstOrDefault().Name}[];{rn}";
 
-                    list.AddRange(Stringify(pi.PropertyType.GetGenericArguments().FirstOrDefault(), 0));
+                    list.AddRange(Stringify(pi.PropertyType.GetGenericArguments().FirstOrDefault(), 0, true));
                 }
                 else if (pi.PropertyType.IsClass)
                 {
                     res += $"{tb(tab + 1)}{pi.Name.f2l()}: {pi.PropertyType.Name};{rn}";
 
-                    list.AddRange(Stringify(pi.PropertyType, 0));
+                    list.AddRange(Stringify(pi.PropertyType, 0, true));
                 }
             }
 
