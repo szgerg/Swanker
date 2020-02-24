@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+  <PropertyGroup>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Acnys.Core.AspNet" Version="0.6.0-beta0001" />
+    <PackageReference Include="Acnys.Core.AspNet.Request" Version="0.6.0-beta0001" />
+
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\..\Swanker\Swanker.csproj" />
+    <ProjectReference Include="..\Swanker.Test.Api\Swanker.Test.Api.csproj" />
+    <ProjectReference Include="..\Swanker.Test.Application\Swanker.Test.Application.csproj" />
+  </ItemGroup>
+
+</Project>
