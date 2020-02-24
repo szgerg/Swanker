@@ -28,6 +28,12 @@ namespace Swanker.Helpers
 
             _types.Add(type);
 
+            if (type == typeof(string))
+            {
+                list.Add($"{tb(tab)}Result type: string{rn}");
+                return list;
+            }
+
             var et = type.GetInterfaces().FirstOrDefault(i => i == typeof(IEnumerable));
             if (et != null)
             {
