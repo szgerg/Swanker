@@ -14,5 +14,7 @@ namespace Swanker
         public string AppName { get; set; }
         public string AppVersion{ get; set; }
         public bool AllowSendToGeneric { get; set; } = true;
+        public Type QueryGenericInterface { get; set; }
+        public Assembly QueryGenericInterfaceAssembly { get; set; }
     }
 }

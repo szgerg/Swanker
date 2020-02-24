@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
@@ -28,9 +29,18 @@ namespace Swanker
         [HttpGet]
         public async Task<Details> GetDetails(string name, bool typeHeader, CancellationToken cancellationToken = default)
         {
+            _logger.Debug($"GetDetails: {name}");
+
             var t = _swankBuilder.Assembly.GetTypes().FirstOrDefault(t => t.FullName == name);
 
-            _logger.Debug($"GetDetails: {t?.FullName}");
+            if (t is null)
+            {
+                t = _swankBuilder.QueryGenericInterfaceAssembly.GetTypes().FirstOrDefault(t => t.FullName == name);
+                t = t.GetInterfaces().First(i => i.Name == _swankBuilder.QueryGenericInterface.Name);
+
+                t = t.GenericTypeArguments[1];
+            }
+
 
             var json = new JsonStringifier(_logger).Stringify(t, 0, !typeHeader, $"{t.FullName},{_swankBuilder.Assembly.GetName().Name}");
             var ts = "";
@@ -76,24 +86,39 @@ namespace Swanker
              var types = _swankBuilder.Assembly.GetTypes()
                 .Where(t => t.GetInterfaces().Any(i => _swankBuilder.Types.Any(t => t.Name == i.Name))).ToList();
 
-             types.ForEach(t =>
-             {
-                 var td = res.FirstOrDefault(i => i.Namespace == t.Namespace);
+             res.AddRange(AddTypeDescriptors(types, true));
+            
+             types = _swankBuilder.QueryGenericInterfaceAssembly.GetTypes()
+                 .Where(i => i.GetInterfaces().Any(t => t.Name == _swankBuilder.QueryGenericInterface.Name))
+                 .ToList();
 
-                 if (td == null)
-                 {
-                     td = new TypeDescriptor
-                     {
-                         Namespace = t.Namespace
-                     };
-
-                     res.Add(td);
-                 }
-
-                 td.Names.Add(t.Name);
-             });
+             res.AddRange(AddTypeDescriptors(types, true));
 
              return res;
+        }
+
+        private IEnumerable<TypeDescriptor> AddTypeDescriptors(List<Type> types, bool canInvoke)
+        {
+            var res = new List<TypeDescriptor>();
+            types.ForEach(t =>
+            {
+                var td = res.FirstOrDefault(i => i.Namespace == t.Namespace);
+
+                if (td == null)
+                {
+                    td = new TypeDescriptor
+                    {
+                        Namespace = t.Namespace,
+                        CanInvoke = canInvoke
+                    };
+
+                    res.Add(td);
+                }
+
+                td.Names.Add(t.Name);
+            });
+
+            return res;
         }
     }
 }

@@ -18,15 +18,21 @@ namespace Swanker.Helpers
 
         public string Stringify(Type type, int tab, bool typeBody, string s = null)
         {
+            var res = "";
+
             if (_types.Contains(type))
             {
                 _logger.Debug($"Type: {type.FullName}, already JSON stringed");
                 return $"{tb(tab)}{{...}}";
             }
 
+            var t = type.GetInterfaces().FirstOrDefault(i => i == typeof(IEnumerable));
+            if (t != null)
+                return "";
+
             _types.Add(type);
 
-            var res = $"{tb(tab)}{{{rn}";
+            res += $"{tb(tab)}{{{rn}";
 
             var ps = type.GetProperties().Where(p => p.CanWrite);
 
@@ -41,6 +47,8 @@ namespace Swanker.Helpers
                     res += $"{tb(tab + 1)}\"{pi.Name}\": 0,{rn}";
                 else if (pi.PropertyType == typeof(string))
                     res += $"{tb(tab + 1)}\"{pi.Name}\": \"string\",{rn}";
+                else if (pi.PropertyType == typeof(Guid))
+                    res += $"{tb(tab + 1)}\"{pi.Name}\": \"{Guid.Empty}\",{rn}";
                 else if (pi.PropertyType.GetInterfaces().Any(i => i.Name == typeof(IEnumerable).Name))
                 {
                     res += $"{tb(tab + 1)}\"{pi.Name}\": [{rn}{Stringify(pi.PropertyType.GetGenericArguments().FirstOrDefault(), tab + 2, typeBody)}{rn}{tb(tab + 1)}],{rn}";

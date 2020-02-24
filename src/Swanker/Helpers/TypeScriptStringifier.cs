@@ -28,6 +28,24 @@ namespace Swanker.Helpers
 
             _types.Add(type);
 
+            var et = type.GetInterfaces().FirstOrDefault(i => i == typeof(IEnumerable));
+            if (et != null)
+            {
+                var it = type.GenericTypeArguments[0];
+
+                if (_types.Contains(it))
+                {
+                    _logger.Debug($"Type: {type.FullName}, already TS stringed");
+                    return list;
+                }
+
+                list.Add($"{tb(tab)}Result type: {it.Name} []{rn}");
+
+                list.AddRange(Stringify(it, tab));
+
+                return list;
+            }
+
             var res = $"{tb(tab)}export interface {type.Name} {{{rn}";
 
             var ps = type.GetProperties().Where(p => p.CanWrite);
@@ -39,6 +57,8 @@ namespace Swanker.Helpers
                 if (TypeHelper.IsNumericType(pi.PropertyType))
                     res += $"{tb(tab + 1)}{pi.Name.f2l()}: number;{rn}";
                 else if (pi.PropertyType == typeof(string))
+                    res += $"{tb(tab + 1)}{pi.Name.f2l()}: string;{rn}";
+                else if (pi.PropertyType == typeof(Guid))
                     res += $"{tb(tab + 1)}{pi.Name.f2l()}: string;{rn}";
                 else if (pi.PropertyType.GetInterfaces().Any(i => i.Name == typeof(IEnumerable).Name))
                 {

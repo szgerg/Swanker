@@ -6,5 +6,6 @@ namespace Swanker.Model
     {
         public string Namespace { get; set; }
         public List<string> Names { get; } = new List<string>();
+        public bool CanInvoke { get; set; } = true;
     }
 }

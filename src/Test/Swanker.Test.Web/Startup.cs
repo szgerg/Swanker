@@ -1,18 +1,17 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Reflection;
 using Acnys.Core.AspNet;
 using Acnys.Core.AspNet.Request;
 using Acnys.Core.Request.Abstractions;
 using Autofac;
 using Microsoft.AspNetCore.Builder;
-using Microsoft.AspNetCore.Diagnostics.HealthChecks;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Swanker.Test.Api.Queries;
+using Swanker.Test.Application.QueryHandlers;
 
 namespace Swanker.Test.Web
 {
@@ -38,6 +37,8 @@ namespace Swanker.Test.Web
                 c.GenericEndpoint = "/api";
                 c.Assembly = typeof(MyQuery).Assembly;
                 c.Types = new List<Type> { typeof(IQuery<>), typeof(ICommand) };
+                c.QueryGenericInterface = typeof(IHandleQuery<,>);
+                c.QueryGenericInterfaceAssembly = typeof(MyQueryHandler).Assembly;
                 c.AppName = "Test Web App";
                 c.AppVersion = "1.0.0";
                 c.AllowSendToGeneric = true;
