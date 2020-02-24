@@ -88,44 +88,44 @@
             header.html('SWANKER: ' + data.AppName + ' ' + data.AppVersion);
 
             var nsbtn = $("#namespacesbtn");
-            var ndd = $('#namespacesdropdown');
+            var namespacedropdown = $('#namespacesdropdown');
 
             var selectedNamespace;
             var selectedName;
             var assembly;
             var allowsend = data.AllowSendToGeneric;
 
-            ndd.on('click', 'li', function () {
+            namespacedropdown.on('click', 'li', function () {
                 selectedNamespace = $(this).text()
                 nsbtn.text(selectedNamespace);
-                tdd.empty();
+                typedropdown.empty();
 
                 data.TypeDescriptors.forEach(t => {
                     if (t.Namespace === selectedNamespace) {
-                        t.Names.forEach(n => tdd.append(`<li class="dropdown-item query-item">${n}</li>`))
-                        tsbtn.prop('disabled', false);
+                        t.Names.forEach(n => typedropdown.append(`<li class="dropdown-item query-item">${n}</li>`))
+                        typesbtn.prop('disabled', false);
                     }
                 })
             });
 
             var tresp = $("#typeresptxt");
-            var tsbtn = $("#typesbtn");
+            var typesbtn = $("#typesbtn");
             var tbtn = $("#typebtn");
-            var tdd = $('#typesdropdown');
+            var typedropdown = $('#typesdropdown');
             var ttxt = $('#typetxt');
             var out = $('#output');
             var tstxt = $('#tstxt');
 
-            tsbtn.prop('disabled', true);
+            typesbtn.prop('disabled', true);
             tresp.hide();
             tbtn.hide();
             ttxt.hide();
             tresp.hide();
             out.hide();
 
-            tdd.on('click', 'li', function () {
+            typedropdown.on('click', 'li', function () {
                 selectedName = $(this).text();
-                tsbtn.text(selectedName);
+                typesbtn.text(selectedName);
                 $.get(`${root}/details?name=${selectedNamespace}.${selectedName}&typeHeader=${$("#typeHeader").is(':checked')}`, (d) => {
                     ttxt.val(d.json);
                     tstxt.val(d.typeScript);
@@ -151,17 +151,17 @@
             });
 
             data.TypeDescriptors.forEach(q => {
-                ndd.append('<li class="dropdown-item query-item">' + q.Namespace + '</li>');
+                namespacedropdown.append('<li class="dropdown-item query-item">' + q.Namespace + '</li>');
             });
 
             tbtn.click(() => post(ttxt.val(), tresp, tbtn, `${selectedNamespace}.${selectedName},${assembly}`));
 
 
-            var ts = $('#ts');
-            var json = $('#json');
+            var tsbtn = $('#tsbtn');
+            var jsonbtn = $('#jsonbtn');
 
-            ts.click(() => showTS());
-            json.click(() => showJSON());
+            tsbtn.click(() => showTS());
+            jsonbtn.click(() => showJSON());
 
             tstxt.hide();
 
@@ -172,6 +172,8 @@
                 ttxt.hide();
                 tresp.hide();
                 tbtn.hide();
+                tsbtn.prop('checked', true).parent('.btn').addClass('active');;
+                jsonbtn.prop('checked', false).parent('.btn').removeClass('active');;
             }
 
             showJSON = () => {
@@ -179,6 +181,8 @@
                 ttxt.show();
                 tresp.show();
                 tbtn.show();
+                jsonbtn.prop('checked', true).parent('.btn').addClass('active');;
+                tsbtn.prop('checked', false).parent('.btn').removeClass('active');;
             }
         });
     </script>
@@ -225,11 +229,11 @@
                     </div>
 
                     <div class="btn-group btn-group-toggle" data-toggle="buttons" id="output">
-                        <label class="btn btn-outline-info active">
-                            <input type="radio" name="options" id="json" autocomplete="off" checked> JSON
+                        <label class="btn btn-outline-info">
+                            <input type="radio" name="options" id="jsonbtn" checked> JSON
                         </label>
                         <label class="btn btn-outline-info">
-                            <input type="radio" name="options" id="ts" autocomplete="off"> TS
+                            <input type="radio" name="options" id="tsbtn" > TS
                         </label>
                     </div>
 
