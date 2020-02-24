@@ -92,7 +92,7 @@ namespace Swanker
                  .Where(i => i.GetInterfaces().Any(t => t.Name == _swankBuilder.QueryGenericInterface.Name))
                  .ToList();
 
-             res.AddRange(AddTypeDescriptors(types, true));
+             res.AddRange(AddTypeDescriptors(types, false));
 
              return res;
         }

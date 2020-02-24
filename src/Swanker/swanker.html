@@ -131,14 +131,21 @@
                     tstxt.val(d.typeScript);
                     assembly = d.assembly;
 
-                    if (!ttxt.is(":visible") && !tstxt.is(":visible")) {
-                        if (allowsend) {
-                            ttxt.show();
-                            tbtn.show();
-                            out.show();
-                        } else {
-                            tstxt.show();
+                    data.TypeDescriptors.forEach(t => {
+                        if (t.Namespace === selectedNamespace) {
+                            if (t.CanInvoke && allowsend) {
+                                out.show();
+                                showJSON();
+                            }
+                            else {
+                                out.hide();
+                                showTS();
+                            }
                         }
+                    })
+
+                    if (!ttxt.is(":visible") && !tstxt.is(":visible")) {
+
                     }
                 });
             });
@@ -153,24 +160,27 @@
             var ts = $('#ts');
             var json = $('#json');
 
-            ts.click(() => {
-                tstxt.show();
-                ttxt.hide();
-                tresp.hide();
-                tbtn.hide();
-            });
-            json.click(() => {
-                tstxt.hide();
-                ttxt.show();
-                tresp.show();
-                tbtn.show();
-            });
+            ts.click(() => showTS());
+            json.click(() => showJSON());
 
             tstxt.hide();
 
             $('#includedContent').val(_data);
-        });
 
+            showTS = () => {
+                tstxt.show();
+                ttxt.hide();
+                tresp.hide();
+                tbtn.hide();
+            }
+
+            showJSON = () => {
+                tstxt.hide();
+                ttxt.show();
+                tresp.show();
+                tbtn.show();
+            }
+        });
     </script>
 </head>
 
@@ -203,7 +213,7 @@
 
                     <h3>Types</h3>
                     <div class="custom-control custom-checkbox">
-                        <input type="checkbox" class="custom-control-input" id="typeHeader" checked> 
+                        <input type="checkbox" class="custom-control-input" id="typeHeader" checked>
                         <label class="custom-control-label" for="typeHeader">Type info in header</label>
                     </div>
                     <div class="dropdown">
