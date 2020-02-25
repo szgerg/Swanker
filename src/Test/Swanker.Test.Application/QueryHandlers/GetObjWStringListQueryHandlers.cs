@@ -14,10 +14,10 @@ namespace Swanker.Test.Application.QueryHandlers
         public async Task<ObjWStringList> Handle(GetObjWStringListQuery query, IDictionary<string, object> arguments = null,
             CancellationToken cancellationToken = new CancellationToken())
         {
-            return new ObjWStringList
+            return await Task.FromResult(new ObjWStringList
             {
                 Strings = new List<string> { "sziva", "banan"}
-            };
+            });
         }
     }
 }
