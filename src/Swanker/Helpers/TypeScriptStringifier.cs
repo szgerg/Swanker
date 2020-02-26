@@ -59,7 +59,7 @@ namespace Swanker.Helpers
 
             var res = $"{tb(tab)}export interface {type.Name} {{{rn}";
 
-            var ps = type.GetProperties().Where(p => p.CanWrite);
+            var ps = type.GetProperties().Where(p => p.CanRead);
 
             foreach (var pi in ps)
             {

@@ -2,6 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.AspNetCore.Mvc.Diagnostics;
 using Serilog;
 
 namespace Swanker.Helpers
@@ -32,9 +33,9 @@ namespace Swanker.Helpers
 
             _types.Add(type);
 
-            res += $"{tb(tab)}{{{rn}";
+                res += $"{tb(tab)}{{{rn}";
 
-            var ps = type.GetProperties().Where(p => p.CanWrite);
+            var ps = type.GetProperties().Where(p => p.CanRead);
 
             if (s != null && typeBody)
                 res += $"{tb(tab + 1)}\"$type\": \"{s}\",{rn}";

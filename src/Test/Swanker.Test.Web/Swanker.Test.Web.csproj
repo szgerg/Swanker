@@ -5,8 +5,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Acnys.Core.AspNet" Version="0.6.0-beta0001" />
-    <PackageReference Include="Acnys.Core.AspNet.Request" Version="0.6.0-beta0001" />
+    <PackageReference Include="Acnys.Core.AspNet" Version="0.7.0-beta0008" />
+    <PackageReference Include="Acnys.Core.AspNet.Request" Version="0.7.0-beta0008" />
 
   </ItemGroup>
 
