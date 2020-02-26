@@ -6,9 +6,8 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link href="https://stackpath.bootstrapcdn.com/bootswatch/4.4.1/darkly/bootstrap.min.css" rel="stylesheet"
+        integrity="sha384-rCA2D+D9QXuP2TomtQwd+uP50EHjpafN+wruul0sXZzX/Da7Txn4tB9aLMZV4DZm" crossorigin="anonymous">
 
     <title>SWANKER</title>
 
@@ -29,15 +28,19 @@
             text-align: center;
             display: table-cell;
             vertical-align: middle !important;
+
         }
 
         .paddign-container {
             padding: 20px;
-            ;
         }
 
         .uibtn {
             width: 100%;
+        }
+
+        .form-control{
+            background-color: silver;
         }
     </style>
 
@@ -48,6 +51,8 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
         integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
         crossorigin="anonymous"></script>
+
+
     <script>
         let api = window.location.protocol + "//" + window.location.host;
         let root = window.location.protocol + "//" + window.location.host + window.location.pathname;
@@ -190,9 +195,9 @@
 
 <body>
     <div class="navbar navbar-dark bg-dark">
-        <div>
+        <span>
             <div class="dot">{&lt;&gt;}</div>
-        </div>
+        </span>
 
 
         <a class="navbar-brand col" href="#">
@@ -208,7 +213,7 @@
                     <h3>Namespaces</h3>
 
                     <div class="dropdown">
-                        <button class="btn btn-outline-secondary dropdown-toggle uibtn" id="namespacesbtn"
+                        <button class="btn btn-secondary dropdown-toggle uibtn" id="namespacesbtn"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Namespaces
                         </button>
@@ -221,7 +226,7 @@
                         <label class="custom-control-label" for="typeHeader">Type info in header</label>
                     </div>
                     <div class="dropdown">
-                        <button class="btn btn-outline-secondary dropdown-toggle uibtn" id="typesbtn"
+                        <button class="btn btn-secondary dropdown-toggle uibtn" id="typesbtn"
                             data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                             Types
                         </button>
@@ -229,17 +234,17 @@
                     </div>
 
                     <div class="btn-group btn-group-toggle" data-toggle="buttons" id="output">
-                        <label class="btn btn-outline-info">
+                        <label class="btn btn-info">
                             <input type="radio" name="options" id="jsonbtn" checked> JSON
                         </label>
-                        <label class="btn btn-outline-info">
-                            <input type="radio" name="options" id="tsbtn" > TS
+                        <label class="btn btn-info">
+                            <input type="radio" name="options" id="tsbtn"> TS
                         </label>
                     </div>
 
                     <textarea class="form-control" id="tstxt" rows="10"></textarea>
                     <textarea class="form-control" id="typetxt" rows="10"></textarea>
-                    <button class="btn btn-outline-secondary uibtn" id="typebtn"> Send </button>
+                    <button class="btn btn-secondary uibtn" id="typebtn"> Send </button>
                     <textarea class="form-control" id="typeresptxt" rows="10"></textarea>
                 </div>
 
